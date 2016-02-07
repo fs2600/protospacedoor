@@ -1,7 +1,19 @@
 #!/usr/bin/python3
-authorized =['0212394425','0213660857', '0857870596','0213548985','0217342905','0067305985']
+#authorized =['0212394425','0213660857', '0857870596','0213548985','0217342905','0067305985']
 
+import sqlite3 as sql
+import sys
 import time
+
+con = sql.connect('serials.db')
+with con:
+    cur = con.cursor()
+    cur.execute("SELECT * FROM serial")
+    rows = cur.fetchall()
+    for row in rows:
+        print row
+        authorized.append(row)
+
 def set(property, value):
 	try:
 		f = open("/sys/class/rpi-pwm/pwm0/" + property, 'w')
