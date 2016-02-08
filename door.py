@@ -6,7 +6,6 @@ import sys
 import time
 
 
-
 def set(property, value):
     try:
         f = open("/sys/class/rpi-pwm/pwm0/" + property, 'w')
