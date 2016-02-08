@@ -5,7 +5,7 @@ import sqlite3 as sql
 from peewee import *
 import sys
 import time
-
+asdfadfasdf
 db = SqliteDatabase('protospacedoor2.db')
 
 class User(Model):
