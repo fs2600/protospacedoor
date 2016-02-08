@@ -5,43 +5,50 @@ import sqlite3 as sql
 import sys
 import time
 
-con = sql.connect('serials.db')
-with con:
-    cur = con.cursor()
-    cur.execute("SELECT * FROM serial")
-    rows = cur.fetchall()
-    for row in rows:
-        print row
-        authorized.append(row)
+
 
 def set(property, value):
-	try:
-		f = open("/sys/class/rpi-pwm/pwm0/" + property, 'w')
-		f.write(value)
-		f.close()	
-	except:
-		print("Error writing to: " + property + " value: " + value)
+    try:
+        f = open("/sys/class/rpi-pwm/pwm0/" + property, 'w')
+        f.write(value)
+        f.close()   
+    except:
+        print("Error writing to: " + property + " value: " + value)
  
  
 def setServo(angle):
-	set("servo", str(angle))
-	
-		
-set("delayed", "0")
-set("mode", "servo")
-set("servo_max", "180")
-set("active", "1")
+    set("servo", str(angle))    
+    set("delayed", "0")
+    set("mode", "servo")
+    set("servo_max", "180")
+    set("active", "1")
 
-setServo(10)
+#setServo(10)
+
+def authorized(id):
+    con = sql.connect('protospacedoor.db')
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM users WHERE keyfob = ?", (id,))
+        row = cur.fetchone()
+        print(row)
+    if row != None:
+        return True
+    con.close()
+
+
+def opendoor(seconds):
+    setServo(180)
+    time.sleep(seconds)
+    setServo(90)
+
  
 while True:
-	id = input('id: ')
-	if id in authorized:
-		print('allowed')
-		print(id)
-		setServo(180)
-		time.sleep(5)
-		setServo(90)	
-	else:
-		print('**********invalid***********')
-		print(id)
+    id = input('id: ')
+    if authorized(id):
+        print('allowed')
+        opendoor(5)
+
+    else:
+        print('**********invalid***********')
+        print(id)
