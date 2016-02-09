@@ -42,6 +42,7 @@ def authorized(id):
         return True
 
 
+
 def opendoor(seconds):
     setServo(180)
     time.sleep(seconds)
