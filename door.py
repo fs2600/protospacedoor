@@ -11,19 +11,25 @@ def set(property, value):
     try:
         f = open("/sys/class/rpi-pwm/pwm0/" + property, 'w')
         f.write(value)
-        f.close()   
+        f.close()
     except:
         print("Error writing to: " + property + " value: " + value)
- 
- 
+
+
 def setServo(angle):
-    set("servo", str(angle))    
+    set("servo", str(angle))
     set("delayed", "0")
     set("mode", "servo")
     set("servo_max", "180")
     set("active", "1")
 
-#setServo(10)
+#create table for the db
+# CREATE TABLE "users" (
+#     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+#     "name" TEXT NOT NULL,
+#     "keyfob" TEXT NOT NULL
+# )
+
 
 def authorized(id):
     con = sql.connect('protospacedoor.db')
@@ -32,9 +38,10 @@ def authorized(id):
         cur.execute("SELECT * FROM users WHERE keyfob = ?", (id,))
         row = cur.fetchone()
         print(row)
+    con.close()
     if row != None:
         return True
-    con.close()
+
 
 
 def opendoor(seconds):
@@ -42,7 +49,7 @@ def opendoor(seconds):
     time.sleep(seconds)
     setServo(90)
 
- 
+
 while True:
     id = input('id: ')
     if authorized(id):
